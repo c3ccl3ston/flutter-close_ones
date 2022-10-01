@@ -1,21 +1,24 @@
 class Season {
-  Season(
-      {required this.season,
-      required this.week,
-      required this.seasonType,
-      required this.firstGameStart});
-
   String season;
   int week;
   String seasonType;
   DateTime firstGameStart;
+  DateTime lastGameStart;
+
+  Season(
+      {required this.season,
+      required this.week,
+      required this.seasonType,
+      required this.firstGameStart,
+      required this.lastGameStart});
 
   factory Season.fromJson(Map<String, dynamic> json) {
     return Season(
         season: json['season'] as String,
         week: json['week'] as int,
         seasonType: json['seasonType'] as String,
-        firstGameStart: DateTime.parse(json['firstGameStart']));
+        firstGameStart: DateTime.parse(json['firstGameStart']),
+        lastGameStart: DateTime.parse(json['lastGameStart']));
   }
 
   Map<String, dynamic> toJson() {
@@ -24,6 +27,7 @@ class Season {
     data['week'] = week;
     data['seasonType'] = seasonType;
     data['firstGameStart'] = firstGameStart;
+    data['lastGameStart'] = lastGameStart;
     return data;
   }
 }

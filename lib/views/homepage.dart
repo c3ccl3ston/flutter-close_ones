@@ -22,10 +22,10 @@ class HomepageState extends State<Homepage>
 
   final RestorableString _selectedYear = RestorableString("");
 
-  final RestorableString weekSeason = RestorableString("");
-  final RestorableString weekSeasonType = RestorableString("");
-  final RestorableInt weekWeek = RestorableInt(0);
-  final RestorableBool weekLatest = RestorableBool(false);
+  final RestorableString selectedSeason = RestorableString("");
+  final RestorableString selectedSeasonType = RestorableString("");
+  final RestorableInt selectedWeek = RestorableInt(0);
+  final RestorableBool shouldCacheWeek = RestorableBool(false);
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class HomepageState extends State<Homepage>
         season: w.season,
         seasonType: w.seasonType,
         week: w.week,
-        latest: w.latest,
+        shouldCache: w.shouldCache,
         key: null,
       );
     }
@@ -48,12 +48,12 @@ class HomepageState extends State<Homepage>
             color: Theme.of(context).colorScheme.onSurface));
   }
 
-  _onSelectItem(w, context) {
+  _onSelectItem(Week w, context) {
     setState(() {
-      weekSeason.value = w.season;
-      weekSeasonType.value = w.seasonType;
-      weekWeek.value = w.week;
-      weekLatest.value = w.latest;
+      selectedSeason.value = w.season;
+      selectedSeasonType.value = w.seasonType;
+      selectedWeek.value = w.week;
+      shouldCacheWeek.value = w.shouldCache;
       _getCloseGamesList(w, context);
     });
     Navigator.of(context).pop(); // close the drawer
@@ -61,7 +61,8 @@ class HomepageState extends State<Homepage>
 
   Future<void> getWeeks() async {
     Map<int, List<Week>> seasons = <int, List<Week>>{};
-    Week lastestWeek = Week(season: "", seasonType: "", week: 0, latest: true);
+    Week lastestWeek =
+        Week(season: "", seasonType: "", week: 0, shouldCache: false);
     for (int i = DateTime.now().year; i >= (DateTime.now().year - 5); i--) {
       List<Season> weeks = await Utils().fetchSeasons(i);
       List<Week> w1 = <Week>[];
@@ -72,9 +73,9 @@ class HomepageState extends State<Homepage>
             week: weeks[j].week,
             seasonType: weeks[j].seasonType);
         if (i == DateTime.now().year && j == weeks.length - 1) {
-          w.setLatest(true);
           lastestWeek = w;
         }
+        w.shouldCache = weeks[j].lastGameStart.isBefore(DateTime.now());
         w1.add(w);
       }
       seasons[i] = w1;
@@ -83,11 +84,11 @@ class HomepageState extends State<Homepage>
     setState(() {
       _seasons = seasons;
 
-      if (weekWeek.value == 0) {
-        weekSeason.value = lastestWeek.season;
-        weekSeasonType.value = lastestWeek.seasonType;
-        weekWeek.value = lastestWeek.week;
-        weekLatest.value = lastestWeek.latest;
+      if (selectedWeek.value == 0) {
+        selectedSeason.value = lastestWeek.season;
+        selectedSeasonType.value = lastestWeek.seasonType;
+        selectedWeek.value = lastestWeek.week;
+        shouldCacheWeek.value = lastestWeek.shouldCache;
         _selectedYear.value = lastestWeek.season;
       }
     });
@@ -105,9 +106,9 @@ class HomepageState extends State<Homepage>
           borderOnForeground: true,
           color: w ==
                   Week(
-                      season: weekSeason.value,
-                      seasonType: weekSeasonType.value,
-                      week: weekWeek.value)
+                      season: selectedSeason.value,
+                      seasonType: selectedSeasonType.value,
+                      week: selectedWeek.value)
               ? Theme.of(context).colorScheme.primaryContainer
               : Theme.of(context).colorScheme.surface,
           clipBehavior: Clip.hardEdge,
@@ -158,7 +159,7 @@ class HomepageState extends State<Homepage>
                 style:
                     const TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
             initiallyExpanded:
-                key.toString() == weekSeason.value ? true : false,
+                key.toString() == selectedSeason.value ? true : false,
             children: [g]),
       ));
     });
@@ -173,7 +174,7 @@ class HomepageState extends State<Homepage>
           itemCount: expansionTiles.length - 1,
           separatorBuilder: (context, index) =>
               const Divider(height: 0, thickness: 0),
-          key: Key(weekSeason.value),
+          key: Key(selectedSeason.value),
           padding: const EdgeInsets.only(top: 0),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics());
@@ -214,10 +215,10 @@ class HomepageState extends State<Homepage>
       ),
       body: _getCloseGamesList(
           Week(
-              season: weekSeason.value,
-              seasonType: weekSeasonType.value,
-              week: weekWeek.value,
-              latest: weekLatest.value),
+              season: selectedSeason.value,
+              seasonType: selectedSeasonType.value,
+              week: selectedWeek.value,
+              shouldCache: shouldCacheWeek.value),
           context),
     );
   }
@@ -228,9 +229,9 @@ class HomepageState extends State<Homepage>
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(_selectedYear, "selected_year");
-    registerForRestoration(weekSeason, "week_season");
-    registerForRestoration(weekSeasonType, "week_seasonType");
-    registerForRestoration(weekWeek, "week_week");
-    registerForRestoration(weekLatest, "week_latest");
+    registerForRestoration(selectedSeason, "week_season");
+    registerForRestoration(selectedSeasonType, "week_seasonType");
+    registerForRestoration(selectedWeek, "week_week");
+    registerForRestoration(shouldCacheWeek, "week_latest");
   }
 }

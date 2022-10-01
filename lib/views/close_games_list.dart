@@ -11,14 +11,14 @@ class CloseGamesList extends StatefulWidget {
   final int week;
   final String season;
   final String seasonType;
-  final bool latest;
+  final bool shouldCache;
 
   const CloseGamesList(
       {super.key,
       required this.week,
       required this.season,
       required this.seasonType,
-      required this.latest});
+      required this.shouldCache});
 
   @override
   CloseGamesListState createState() {
@@ -31,7 +31,7 @@ class CloseGamesListState extends State<CloseGamesList> with RestorationMixin {
 
   Future<List<Game>> _getGames() async {
     return Utils().fetchGames(
-        widget.season, widget.seasonType, widget.week, widget.latest);
+        widget.season, widget.seasonType, widget.week, widget.shouldCache);
   }
 
   String _getSeasonHeader(int year, String seasonType) {

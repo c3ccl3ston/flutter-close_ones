@@ -27,22 +27,22 @@ class Utils {
   }
 
   Future<List<Game>> fetchGames(
-      String season, String seasonType, int week, bool latest) async {
+      String season, String seasonType, int week, bool shouldCache) async {
     String gamesFileName = '$season$seasonType$week.json';
 
     String rankingsFileName = '$season$seasonType${week}rankings.json';
 
-    var dir = await getApplicationDocumentsDirectory();
+    var dir = await getTemporaryDirectory();
     File gamesFile = File('${dir.path}/$gamesFileName');
     File rankingsFile = File('${dir.path}/$rankingsFileName');
 
-    if (gamesFile.existsSync() && rankingsFile.existsSync() && !latest) {
-      // print('CACHE FILES: using cached files');
+    if (gamesFile.existsSync() && rankingsFile.existsSync()) {
+      // print('CACHE FILES: using cached files for $season Week $week');
       var gamesData = gamesFile.readAsStringSync();
       var rankingsData = rankingsFile.readAsStringSync();
       return compute(parseGames, [gamesData, rankingsData]);
     } else {
-      // print('CACHE FILES: calling api');
+      // print('CACHE FILES: calling api for $season Week $week');
       final response = await http.get(
         Uri.parse(
             "https://api.collegefootballdata.com/games?year=$season&week=$week&seasonType=$seasonType&division=fbs"),
@@ -63,11 +63,13 @@ class Utils {
 
       List<String> responses = [response.body, rankingsResponse.body];
 
-      // saving to cache
-      gamesFile.writeAsStringSync(response.body,
-          flush: false, mode: FileMode.write);
-      rankingsFile.writeAsStringSync(rankingsResponse.body,
-          flush: false, mode: FileMode.write);
+      if (shouldCache) {
+        // saving to cache
+        gamesFile.writeAsStringSync(response.body,
+            flush: false, mode: FileMode.write);
+        rankingsFile.writeAsStringSync(rankingsResponse.body,
+            flush: false, mode: FileMode.write);
+      }
 
       await Future.delayed(const Duration(milliseconds: 1000));
 

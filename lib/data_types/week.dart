@@ -3,13 +3,13 @@ class Week {
       {required this.season,
       required this.week,
       required this.seasonType,
-      this.latest = false});
+      this.shouldCache = true});
 
   final String season;
   final int week;
   final String seasonType;
   String? label;
-  bool latest;
+  bool shouldCache;
 
   factory Week.fromJson(Map<String, dynamic> json) {
     return Week(
@@ -29,10 +29,6 @@ class Week {
   String getLabel() {
     if (seasonType == "postseason") return "Bowls";
     return 'Week $week';
-  }
-
-  void setLatest(bool isLatest) {
-    latest = isLatest;
   }
 
   @override
