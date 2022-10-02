@@ -75,7 +75,8 @@ class HomepageState extends State<Homepage>
         if (i == DateTime.now().year && j == weeks.length - 1) {
           lastestWeek = w;
         }
-        w.shouldCache = weeks[j].lastGameStart.isBefore(DateTime.now());
+        
+        w.shouldCache = (weeks[j].lastGameStart.add(const Duration(hours: 6)).isBefore(DateTime.now());
         w1.add(w);
       }
       seasons[i] = w1;
