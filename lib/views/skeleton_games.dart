@@ -1,3 +1,4 @@
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -109,28 +110,40 @@ class SkeletonGamesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 5,
-        primary: false,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          if (withHeader && index == 0) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(40, 5, 40, 0),
-              child: SkeletonItem(
-                  child: Column(children: [
-                Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 0),
-                    child: Column(children: const [
-                      SkeletonLine(style: SkeletonLineStyle(height: 50)),
-                      SizedBox(height: 20)
-                    ]))
-              ])),
-            );
-          }
-          return _gamesList(context);
-        });
+    int numColumns = 1;
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 550 && screenWidth <= 1080) {
+      numColumns = 2;
+    } else if (screenWidth > 1080) {
+      numColumns = 3;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+      child: DynamicHeightGridView(
+          // padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: numColumns,
+          itemCount: 5,
+          // primary: false,
+          shrinkWrap: true,
+          builder: (context, index) {
+            if (withHeader && index == 0) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(40, 5, 40, 0),
+                child: SkeletonItem(
+                    child: Column(children: [
+                  Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 0),
+                      child: Column(children: const [
+                        SkeletonLine(style: SkeletonLineStyle(height: 50)),
+                        SizedBox(height: 20)
+                      ]))
+                ])),
+              );
+            }
+            return _gamesList(context);
+          }),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -187,15 +188,27 @@ class Games extends StatelessWidget {
       ));
     }
 
-    return ListView.builder(
+    int numColumns = 1;
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 550 && screenWidth <= 1080) {
+      numColumns = 2;
+    } else if (screenWidth > 1080) {
+      numColumns = 3;
+    }
+
+    return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-      itemCount: games.length,
-      shrinkWrap: true,
-      primary: false,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, i) {
-        return _listItem(i, context);
-      },
+      child: DynamicHeightGridView(
+        // padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+        itemCount: games.length,
+        shrinkWrap: true,
+        // primary: false,
+        physics: const NeverScrollableScrollPhysics(),
+        builder: (context, i) {
+          return _listItem(i, context);
+        },
+        crossAxisCount: numColumns,
+      ),
     );
   }
 }

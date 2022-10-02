@@ -189,10 +189,18 @@ class HomepageState extends State<Homepage>
       ]);
     }
 
+    double drawerWidth = 0.0;
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 550) {
+      drawerWidth = screenWidth;
+    } else {
+      drawerWidth = screenWidth * .4;
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text("Close Ones")),
       drawer: Drawer(
-        width: MediaQuery.of(context).size.width,
+        width: drawerWidth,
         child: Column(
           children: [
             AppBar(
