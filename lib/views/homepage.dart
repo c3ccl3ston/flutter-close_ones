@@ -195,6 +195,8 @@ class HomepageState extends State<Homepage>
     double screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth <= 550) {
       drawerWidth = screenWidth;
+    } else if (screenWidth > 550 && screenWidth <= 1080) {
+      drawerWidth = screenWidth * .8;
     } else {
       drawerWidth = screenWidth * .4;
     }
