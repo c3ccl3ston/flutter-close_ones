@@ -1,4 +1,5 @@
 import 'package:closeones_app/data_types/season.dart';
+import 'package:closeones_app/views/drawer_options.dart';
 import 'package:flutter/material.dart';
 
 import '../data_types/week.dart';
@@ -63,7 +64,7 @@ class HomepageState extends State<Homepage> with RestorationMixin {
     Week lastestWeek =
         Week(season: "", seasonType: "", week: 0, shouldCache: false);
     int index = 0;
-    for (int i = DateTime.now().year; i >= (DateTime.now().year - 5); i--) {
+    for (int i = DateTime.now().year; i >= (DateTime.now().year - 4); i--) {
       List<Season> season = await Utils().fetchSeasons(i);
       List<Week> weeks = <Week>[];
 
@@ -99,96 +100,6 @@ class HomepageState extends State<Homepage> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> expansionTiles = <Widget>[];
-
-    for (var season in _seasons) {
-      List<Widget> cards = <Widget>[];
-      for (var week in season.weeks) {
-        cards.add(Card(
-          elevation: 5,
-          borderOnForeground: true,
-          color: week ==
-                  Week(
-                      season: selectedSeason.value,
-                      seasonType: selectedSeasonType.value,
-                      week: selectedWeek.value)
-              ? Theme.of(context).colorScheme.primaryContainer
-              : Theme.of(context).colorScheme.surface,
-          clipBehavior: Clip.hardEdge,
-          child: InkWell(
-              onTap: () => _onSelectItem(week, context),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                          week.seasonType == "postseason"
-                              ? "BOWLS"
-                              : "WEEK\n${week.week}",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w300, fontSize: 14)),
-                    ],
-                  )),
-                ],
-              )),
-        ));
-      }
-      Container g = Container(
-        color: Theme.of(context).colorScheme.background,
-        child: GridView(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 85,
-                childAspectRatio: 1 / 1.25,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 10),
-            children: cards),
-      );
-
-      expansionTiles.add(ExpansionTile(
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          textColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          title: Text('${season.season} Season',
-              style:
-                  const TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
-          initiallyExpanded:
-              season.season.toString() == selectedSeason.value ? true : false,
-          children: [g]));
-    }
-
-    Widget drawerOptions;
-
-    if (expansionTiles.isNotEmpty) {
-      drawerOptions = ListView.separated(
-          itemBuilder: (context, index) {
-            return expansionTiles[index];
-          },
-          itemCount: expansionTiles.length - 1,
-          separatorBuilder: (context, index) =>
-              const Divider(height: 0, thickness: 0),
-          key: Key(selectedSeason.value),
-          padding: const EdgeInsets.only(top: 0),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics());
-    } else {
-      drawerOptions = Column(children: const [
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: CircularProgressIndicator(),
-          ),
-        )
-      ]);
-    }
-
     double drawerWidth = 0.0;
     double screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth <= 550) {
@@ -219,7 +130,15 @@ class HomepageState extends State<Homepage> with RestorationMixin {
                     icon: const Icon(Icons.close))
               ],
             ),
-            Expanded(child: SingleChildScrollView(child: drawerOptions))
+            Expanded(
+                child: SingleChildScrollView(
+                    child: DrawerOptions(
+              seasons: _seasons,
+              onSelectItem: _onSelectItem,
+              selectedSeason: selectedSeason.value,
+              selectedSeasonType: selectedSeasonType.value,
+              selectedWeek: selectedWeek.value,
+            )))
           ],
         ),
       ),
