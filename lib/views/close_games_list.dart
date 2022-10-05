@@ -4,7 +4,7 @@ import '../data_types/week.dart';
 import 'package:flutter/material.dart';
 
 import '../data_types/game.dart';
-import 'games.dart';
+import 'game_grid.dart';
 import '../utils/utils.dart';
 
 class CloseGamesList extends StatefulWidget {
@@ -26,42 +26,26 @@ class CloseGamesList extends StatefulWidget {
   }
 }
 
-class CloseGamesListState extends State<CloseGamesList> with RestorationMixin {
-  final RestorableBool _isRestored = RestorableBool(false);
+class CloseGamesListState extends State<CloseGamesList> {
+  bool _isRefreshing = false;
 
   Future<List<Game>> _getGames() async {
     return Utils().fetchGames(
         widget.season, widget.seasonType, widget.week, widget.shouldCache);
   }
 
-  String _getSeasonHeader(int year, String seasonType) {
-    if (seasonType == 'postseason') {
-      return "$year";
-    }
-    return "$year Regular Season";
-  }
-
-  String _getWeekHeader(int week, String seasonType) {
-    if (seasonType == 'postseason') {
-      return "Bowls";
-    }
-    return "Week $week";
-  }
-
-  bool isRefreshing = false;
-
   Future<void> _pullToRefresh() async {
-    await _getGames();
     setState(() {
-      isRefreshing = true;
+      _isRefreshing = true;
     });
+    await _getGames();
   }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: () {
-          isRefreshing = true;
+          _isRefreshing = true;
           return _pullToRefresh();
         },
         child: SingleChildScrollView(
@@ -72,15 +56,18 @@ class CloseGamesListState extends State<CloseGamesList> with RestorationMixin {
                   padding: const EdgeInsets.only(top: 15, bottom: 10),
                   child: Column(children: [
                     Text(
-                      _getSeasonHeader(
-                          int.parse(widget.season), widget.seasonType),
+                      widget.seasonType == 'postseason'
+                          ? widget.season
+                          : '${widget.season} Regular Season',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w200,
                           color: Theme.of(context).colorScheme.onSurface),
                     ),
                     Text(
-                      _getWeekHeader(widget.week, widget.seasonType),
+                      widget.seasonType == 'postseason'
+                          ? 'Bowls'
+                          : 'Week ${widget.week}',
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w300,
@@ -96,10 +83,10 @@ class CloseGamesListState extends State<CloseGamesList> with RestorationMixin {
                   case ConnectionState.none:
                     return const Center(child: CircularProgressIndicator());
                   case ConnectionState.waiting:
-                    if (!isRefreshing) {
+                    if (!_isRefreshing) {
                       return const SkeletonGamesList();
                     } else {
-                      isRefreshing = false;
+                      _isRefreshing = false;
                       continue games;
                     }
                   case ConnectionState.active:
@@ -111,7 +98,7 @@ class CloseGamesListState extends State<CloseGamesList> with RestorationMixin {
                         child: Text("ERROR: ${snapshot.error}"),
                       );
                     } else {
-                      return Games(
+                      return GameGrid(
                           key: const ValueKey("Games"),
                           games: snapshot.data!,
                           week: Week(
@@ -124,13 +111,5 @@ class CloseGamesListState extends State<CloseGamesList> with RestorationMixin {
             ),
           ]),
         ));
-  }
-
-  @override
-  String? get restorationId => "games_list";
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_isRestored, "isRestored");
   }
 }

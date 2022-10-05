@@ -1,16 +1,20 @@
+import 'week.dart';
+
 class Season {
   String season;
   int week;
   String seasonType;
   DateTime firstGameStart;
   DateTime lastGameStart;
+  List<Week> weeks;
 
   Season(
       {required this.season,
       required this.week,
       required this.seasonType,
       required this.firstGameStart,
-      required this.lastGameStart});
+      required this.lastGameStart,
+      this.weeks = const []});
 
   factory Season.fromJson(Map<String, dynamic> json) {
     return Season(

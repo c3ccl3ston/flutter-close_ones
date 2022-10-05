@@ -1,18 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../data_types/game.dart';
-import '../data_types/week.dart';
 
-class Games extends StatelessWidget {
-  const Games({super.key, required this.games, required this.week});
+class GameCard extends StatelessWidget {
+  final Game game;
 
-  final List<Game> games;
-  final Week week;
+  const GameCard({super.key, required this.game});
 
-  Widget _listItem(i, context) {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Card(
@@ -29,7 +27,7 @@ class Games extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primaryContainer),
                   padding: const EdgeInsets.only(bottom: 5, top: 5),
                   child: Text(
-                    DateFormat("E MMM d, yyyy").format(games[i].startDate),
+                    DateFormat("E MMM d, yyyy").format(game.startDate),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontWeight: FontWeight.w200, fontSize: 14),
@@ -41,18 +39,14 @@ class Games extends StatelessWidget {
                         left: 20,
                         top: 15,
                         child: Text(
-                          games[i].awayRank! == 0
-                              ? ""
-                              : games[i].awayRank!.toString(),
+                          game.awayRank! == 0 ? "" : game.awayRank!.toString(),
                           style: const TextStyle(fontWeight: FontWeight.w200),
                         )),
                     Positioned(
                         right: 20,
                         top: 15,
                         child: Text(
-                          games[i].homeRank! == 0
-                              ? ""
-                              : games[i].homeRank!.toString(),
+                          game.homeRank! == 0 ? "" : game.homeRank!.toString(),
                           style: const TextStyle(fontWeight: FontWeight.w200),
                         )),
                     Column(
@@ -71,7 +65,7 @@ class Games extends StatelessWidget {
                                       children: [
                                         CachedNetworkImage(
                                           imageUrl:
-                                              "http://a.espncdn.com/i/teamlogos/ncaa/500${(Theme.of(context).brightness == Brightness.dark) ? '-dark' : ''}/${games[i].awayId}.png",
+                                              "http://a.espncdn.com/i/teamlogos/ncaa/500${(Theme.of(context).brightness == Brightness.dark) ? '-dark' : ''}/${game.awayId}.png",
                                           // placeholder: (context, url) =>
                                           //     const CircularProgressIndicator(),
                                           errorWidget: (context, url, error) =>
@@ -83,7 +77,7 @@ class Games extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 5.0),
                                           child: Text(
-                                              games[i].awayTeam.toUpperCase(),
+                                              game.awayTeam.toUpperCase(),
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.w300,
@@ -116,7 +110,7 @@ class Games extends StatelessWidget {
                                       children: [
                                         CachedNetworkImage(
                                           imageUrl:
-                                              "http://a.espncdn.com/i/teamlogos/ncaa/500${(Theme.of(context).brightness == Brightness.dark) ? '-dark' : ''}/${games[i].homeId}.png",
+                                              "http://a.espncdn.com/i/teamlogos/ncaa/500${(Theme.of(context).brightness == Brightness.dark) ? '-dark' : ''}/${game.homeId}.png",
                                           width: 100,
                                           height: 100,
                                         ),
@@ -124,7 +118,7 @@ class Games extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 5.0),
                                           child: Text(
-                                              games[i].homeTeam.toUpperCase(),
+                                              game.homeTeam.toUpperCase(),
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.w300,
@@ -134,7 +128,7 @@ class Games extends StatelessWidget {
                                     )),
                               ]),
                         ),
-                        if (games[i].notes != null) ...[
+                        if (game.notes != null) ...[
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -144,7 +138,7 @@ class Games extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 15, top: 15),
                             margin: const EdgeInsets.only(bottom: 15),
                             child: Text(
-                              games[i].notes!,
+                              game.notes!,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontWeight: FontWeight.w200, fontSize: 14),
@@ -158,57 +152,6 @@ class Games extends StatelessWidget {
               ],
             ),
           )),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (games.isEmpty) {
-      return Center(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Card(
-                  elevation: 5,
-                  child: Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text(
-                      "No games for this week!",
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w300),
-                    ),
-                  )),
-            ),
-          ),
-        ],
-      ));
-    }
-
-    int numColumns = 1;
-    double screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth > 550 && screenWidth <= 1080) {
-      numColumns = 2;
-    } else if (screenWidth > 1080) {
-      numColumns = 3;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-      child: DynamicHeightGridView(
-        // padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-        itemCount: games.length,
-        shrinkWrap: true,
-        // primary: false,
-        physics: const NeverScrollableScrollPhysics(),
-        builder: (context, i) {
-          return _listItem(i, context);
-        },
-        crossAxisCount: numColumns,
-      ),
     );
   }
 }

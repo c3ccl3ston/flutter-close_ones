@@ -13,12 +13,13 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   static final _defaultLightColorScheme =
-      ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue);
+      ColorScheme.fromSeed(seedColor: const Color(0xFF4267B2));
 
-  static final _defaultDarkColorScheme = ColorScheme.fromSwatch(
-      primarySwatch: Colors.lightBlue, brightness: Brightness.dark);
+  static final _defaultDarkColorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF4267B2),
+      brightness: Brightness.dark,
+      primaryContainer: const Color(0xFF555555));
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {

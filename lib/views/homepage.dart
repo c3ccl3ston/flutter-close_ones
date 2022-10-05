@@ -16,9 +16,8 @@ class Homepage extends StatefulWidget {
   }
 }
 
-class HomepageState extends State<Homepage>
-    with WidgetsBindingObserver, RestorationMixin {
-  Map<int, List<Week>> _seasons = <int, List<Week>>{};
+class HomepageState extends State<Homepage> with RestorationMixin {
+  List<Season> _seasons = <Season>[];
 
   final RestorableString _selectedYear = RestorableString("");
 
@@ -60,31 +59,33 @@ class HomepageState extends State<Homepage>
   }
 
   Future<void> getWeeks() async {
-    Map<int, List<Week>> seasons = <int, List<Week>>{};
+    List<Season> newSeasons = <Season>[];
     Week lastestWeek =
         Week(season: "", seasonType: "", week: 0, shouldCache: false);
+    int index = 0;
     for (int i = DateTime.now().year; i >= (DateTime.now().year - 5); i--) {
-      List<Season> weeks = await Utils().fetchSeasons(i);
-      List<Week> w1 = <Week>[];
+      List<Season> season = await Utils().fetchSeasons(i);
+      List<Week> weeks = <Week>[];
 
-      for (int j = 0; j < weeks.length; j++) {
+      for (int j = 0; j < season.length; j++) {
         Week w = Week(
-            season: weeks[j].season,
-            week: weeks[j].week,
-            seasonType: weeks[j].seasonType);
-        if (i == DateTime.now().year && j == weeks.length - 1) {
+            season: season[j].season,
+            week: season[j].week,
+            seasonType: season[j].seasonType);
+        if (i == DateTime.now().year && j == season.length - 1) {
           lastestWeek = w;
         }
 
-        w.shouldCache = (weeks[j].lastGameStart.add(const Duration(hours: 6)))
+        w.shouldCache = (season[j].lastGameStart.add(const Duration(hours: 6)))
             .isBefore(DateTime.now());
-        w1.add(w);
+        weeks.add(w);
       }
-      seasons[i] = w1;
+      newSeasons.add(season[index]);
+      newSeasons[index++].weeks = weeks;
     }
 
     setState(() {
-      _seasons = seasons;
+      _seasons = newSeasons;
 
       if (selectedWeek.value == 0) {
         selectedSeason.value = lastestWeek.season;
@@ -100,13 +101,13 @@ class HomepageState extends State<Homepage>
   Widget build(BuildContext context) {
     List<Widget> expansionTiles = <Widget>[];
 
-    _seasons.forEach((key, value) {
+    for (var season in _seasons) {
       List<Widget> cards = <Widget>[];
-      for (var w in value) {
+      for (var week in season.weeks) {
         cards.add(Card(
           elevation: 5,
           borderOnForeground: true,
-          color: w ==
+          color: week ==
                   Week(
                       season: selectedSeason.value,
                       seasonType: selectedSeasonType.value,
@@ -115,7 +116,7 @@ class HomepageState extends State<Homepage>
               : Theme.of(context).colorScheme.surface,
           clipBehavior: Clip.hardEdge,
           child: InkWell(
-              onTap: () => _onSelectItem(w, context),
+              onTap: () => _onSelectItem(week, context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -126,9 +127,9 @@ class HomepageState extends State<Homepage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                          w.seasonType == "postseason"
+                          week.seasonType == "postseason"
                               ? "BOWLS"
-                              : "WEEK\n${w.week}",
+                              : "WEEK\n${week.week}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 14)),
@@ -152,19 +153,16 @@ class HomepageState extends State<Homepage>
             children: cards),
       );
 
-      expansionTiles.add(Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            textColor: Theme.of(context).colorScheme.onPrimaryContainer,
-            title: Text('$key Season',
-                style:
-                    const TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
-            initiallyExpanded:
-                key.toString() == selectedSeason.value ? true : false,
-            children: [g]),
-      ));
-    });
+      expansionTiles.add(ExpansionTile(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          textColor: Theme.of(context).colorScheme.onPrimaryContainer,
+          title: Text('${season.season} Season',
+              style:
+                  const TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
+          initiallyExpanded:
+              season.season.toString() == selectedSeason.value ? true : false,
+          children: [g]));
+    }
 
     Widget drawerOptions;
 
