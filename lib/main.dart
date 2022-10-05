@@ -11,15 +11,6 @@ Future main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  static final _defaultLightColorScheme =
-      ColorScheme.fromSeed(seedColor: const Color(0xFF4267B2));
-
-  static final _defaultDarkColorScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF4267B2),
-      brightness: Brightness.dark,
-      primaryContainer: const Color(0xFF555555));
-
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
@@ -28,10 +19,13 @@ class MyApp extends StatelessWidget {
         restorationScopeId: "root",
         home: const Homepage(title: 'Close Ones'),
         theme: ThemeData(
-            colorScheme: lightColorScheme ?? _defaultLightColorScheme,
+            colorScheme: lightColorScheme ??
+                ColorScheme.fromSeed(seedColor: const Color(0xFF4267b2)),
             useMaterial3: true),
         darkTheme: ThemeData(
-            colorScheme: darkColorScheme ?? _defaultDarkColorScheme,
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color.fromARGB(255, 24, 27, 32),
+                brightness: Brightness.dark),
             useMaterial3: true),
         themeMode: ThemeMode.system,
       );
