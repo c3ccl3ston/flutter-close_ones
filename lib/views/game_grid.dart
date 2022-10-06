@@ -18,21 +18,18 @@ class GameGrid extends StatelessWidget {
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Card(
-                  elevation: 5,
-                  child: Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text(
-                      "No games for this week!",
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w300),
-                    ),
-                  )),
-            ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Card(
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(28.0),
+                  child: Text(
+                    "No games for this week!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w300),
+                  ),
+                )),
           ),
         ],
       ));
