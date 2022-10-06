@@ -1,11 +1,18 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'views/homepage.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
+  //Setting SysemUIOverlay
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+    systemNavigationBarColor: Colors.transparent,
+    statusBarColor: Colors.transparent,
+  ));
+
   runApp(const MyApp());
 }
 

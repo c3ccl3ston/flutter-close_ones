@@ -88,11 +88,19 @@ class _DrawerOptionsState extends State<DrawerOptions> {
 
       expansionTiles.add(ExpansionPanel(
           headerBuilder: (context, isExpanded) {
+            if (isExpanded) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+                child: Text('${season.season} Season',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: 24)),
+              );
+            }
             return Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
               child: Text('${season.season} Season',
                   style: const TextStyle(
-                      fontWeight: FontWeight.w300, fontSize: 18)),
+                      fontWeight: FontWeight.w200, fontSize: 22)),
             );
           },
           canTapOnHeader: true,
@@ -105,22 +113,19 @@ class _DrawerOptionsState extends State<DrawerOptions> {
 
     if (expansionTiles.isNotEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: ExpansionPanelList(
-            expandedHeaderPadding: EdgeInsets.zero,
-            animationDuration: const Duration(milliseconds: 500),
-            expansionCallback: (panelIndex, isExpanded) {
-              setState(() {
-                for (int i = 0; i < _isExpanded.length; i++) {
-                  _isExpanded[i] = false;
-                }
-                _isExpanded[panelIndex] = !isExpanded;
-              });
-            },
-            children: expansionTiles,
-          ),
+        padding: const EdgeInsets.all(8),
+        child: ExpansionPanelList(
+          expandedHeaderPadding: EdgeInsets.zero,
+          animationDuration: const Duration(milliseconds: 500),
+          expansionCallback: (panelIndex, isExpanded) {
+            setState(() {
+              for (int i = 0; i < _isExpanded.length; i++) {
+                _isExpanded[i] = false;
+              }
+              _isExpanded[panelIndex] = !isExpanded;
+            });
+          },
+          children: expansionTiles,
         ),
       );
     } else {
