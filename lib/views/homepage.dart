@@ -111,7 +111,9 @@ class HomepageState extends State<Homepage> with RestorationMixin {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Close Ones")),
+      drawerEnableOpenDragGesture: true,
+      drawerEdgeDragWidth: MediaQuery.of(context).size.width,
+      appBar: AppBar(title: const Text("Close Ones"), centerTitle: true),
       drawer: Drawer(
         width: drawerWidth,
         child: Column(
