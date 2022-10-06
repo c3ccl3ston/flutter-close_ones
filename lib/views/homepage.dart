@@ -103,7 +103,7 @@ class HomepageState extends State<Homepage> with RestorationMixin {
     double drawerWidth = 0.0;
     double screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth <= 550) {
-      drawerWidth = screenWidth;
+      drawerWidth = screenWidth * .9;
     } else if (screenWidth > 550 && screenWidth <= 1080) {
       drawerWidth = screenWidth * .8;
     } else {
@@ -114,34 +114,38 @@ class HomepageState extends State<Homepage> with RestorationMixin {
       drawerEnableOpenDragGesture: true,
       drawerEdgeDragWidth: MediaQuery.of(context).size.width,
       appBar: AppBar(title: const Text("Close Ones"), centerTitle: true),
-      drawer: Drawer(
-        width: drawerWidth,
-        child: Column(
-          children: [
-            AppBar(
-              title: const Text(
-                "Seasons",
-                style: TextStyle(fontWeight: FontWeight.w300),
-              ),
-              automaticallyImplyLeading: false,
-              actions: [
-                IconButton(
-                    onPressed: (() {
-                      Navigator.of(context).pop();
-                    }),
-                    icon: const Icon(Icons.close))
+      drawer: ClipRRect(
+        borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
+        child: Drawer(
+          semanticLabel: "Drawer",
+          width: drawerWidth,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: (() {
+                          Navigator.of(context).pop();
+                        }),
+                        icon: const Icon(Icons.close)),
+                  ],
+                ),
+                Expanded(
+                    child: SingleChildScrollView(
+                        child: DrawerOptions(
+                  seasons: _seasons,
+                  onSelectItem: _onSelectItem,
+                  selectedSeason: selectedSeason.value,
+                  selectedSeasonType: selectedSeasonType.value,
+                  selectedWeek: selectedWeek.value,
+                )))
               ],
             ),
-            Expanded(
-                child: SingleChildScrollView(
-                    child: DrawerOptions(
-              seasons: _seasons,
-              onSelectItem: _onSelectItem,
-              selectedSeason: selectedSeason.value,
-              selectedSeasonType: selectedSeasonType.value,
-              selectedWeek: selectedWeek.value,
-            )))
-          ],
+          ),
         ),
       ),
       body: _getCloseGamesList(

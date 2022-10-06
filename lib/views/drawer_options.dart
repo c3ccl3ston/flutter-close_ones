@@ -38,8 +38,7 @@ class _DrawerOptionsState extends State<DrawerOptions> {
       List<Widget> cards = <Widget>[];
       for (var week in season.weeks) {
         cards.add(Card(
-          elevation: 5,
-          borderOnForeground: true,
+          elevation: 2,
           color: week ==
                   Week(
                       season: widget.selectedSeason,
@@ -47,7 +46,6 @@ class _DrawerOptionsState extends State<DrawerOptions> {
                       week: widget.selectedWeek)
               ? Theme.of(context).colorScheme.primaryContainer
               : Theme.of(context).scaffoldBackgroundColor,
-          clipBehavior: Clip.hardEdge,
           child: InkWell(
               onTap: () => widget.onSelectItem(week, context),
               child: Column(
@@ -79,28 +77,20 @@ class _DrawerOptionsState extends State<DrawerOptions> {
             shrinkWrap: true,
             physics: const ScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 85,
-                childAspectRatio: 1 / 1.25,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 10),
+                maxCrossAxisExtent: 75,
+                crossAxisSpacing: 1,
+                mainAxisSpacing: 1,
+                childAspectRatio: .85),
             children: cards),
       );
 
       expansionTiles.add(ExpansionPanel(
           headerBuilder: (context, isExpanded) {
-            if (isExpanded) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
-                child: Text('${season.season} Season',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500, fontSize: 24)),
-              );
-            }
             return Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text('${season.season} Season',
                   style: const TextStyle(
-                      fontWeight: FontWeight.w200, fontSize: 22)),
+                      fontWeight: FontWeight.w300, fontSize: 18)),
             );
           },
           canTapOnHeader: true,
@@ -113,7 +103,7 @@ class _DrawerOptionsState extends State<DrawerOptions> {
 
     if (expansionTiles.isNotEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.only(bottom: 20),
         child: ExpansionPanelList(
           expandedHeaderPadding: EdgeInsets.zero,
           animationDuration: const Duration(milliseconds: 500),
