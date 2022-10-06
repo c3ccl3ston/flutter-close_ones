@@ -96,7 +96,9 @@ class _DrawerOptionsState extends State<DrawerOptions> {
             );
           },
           canTapOnHeader: true,
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: _isExpanded[count]
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.surface,
           isExpanded: _isExpanded[count++],
           body: g));
     }
