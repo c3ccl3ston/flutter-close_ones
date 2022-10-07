@@ -134,15 +134,14 @@ class HomepageState extends State<Homepage> with RestorationMixin {
                         icon: const Icon(Icons.close)),
                   ],
                 ),
-                Expanded(
-                    child: SingleChildScrollView(
-                        child: DrawerOptions(
+                SingleChildScrollView(
+                    child: DrawerOptions(
                   seasons: _seasons,
                   onSelectItem: _onSelectItem,
                   selectedSeason: selectedSeason.value,
                   selectedSeasonType: selectedSeasonType.value,
                   selectedWeek: selectedWeek.value,
-                )))
+                ))
               ],
             ),
           ),
