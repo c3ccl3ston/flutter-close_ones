@@ -27,8 +27,6 @@ class HomepageState extends State<Homepage> with RestorationMixin {
   final RestorableInt selectedWeek = RestorableInt(0);
   final RestorableBool shouldCacheWeek = RestorableBool(false);
 
-  final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
-
   @override
   void initState() {
     super.initState();
@@ -112,13 +110,9 @@ class HomepageState extends State<Homepage> with RestorationMixin {
       drawerWidth = screenWidth * .4;
     }
 
-    bool drawerIsOpened = false;
-
     return Scaffold(
-        key: _globalKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: MediaQuery.of(context).size.width / 4,
-        onDrawerChanged: (isOpened) => drawerIsOpened = isOpened,
         appBar: AppBar(title: const Text("Close Ones"), centerTitle: true),
         drawer: ClipRRect(
           borderRadius: const BorderRadius.only(
