@@ -1,8 +1,8 @@
-import 'package:closeones_app/data_types/season.dart';
+import 'package:closeones_app/models/season.dart';
 import 'package:closeones_app/views/drawer_options.dart';
 import 'package:flutter/material.dart';
 
-import '../data_types/week.dart';
+import '../models/week.dart';
 import 'close_games_list.dart';
 import '../utils/utils.dart';
 

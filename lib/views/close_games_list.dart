@@ -1,9 +1,9 @@
 import 'package:closeones_app/views/skeleton_games.dart';
 
-import '../data_types/week.dart';
+import '../models/week.dart';
 import 'package:flutter/material.dart';
 
-import '../data_types/game.dart';
+import '../models/game.dart';
 import 'game_grid.dart';
 import '../utils/utils.dart';
 

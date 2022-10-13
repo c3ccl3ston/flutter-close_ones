@@ -9,9 +9,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../data_types/season.dart';
-import '../data_types/game.dart';
-import '../data_types/rankings.dart';
+import '../models/season.dart';
+import '../models/game.dart';
+import '../models/rankings.dart';
 
 class Utils {
   Future<List<Season>> fetchSeasons(int year) async {

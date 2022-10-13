@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../data_types/game.dart';
+import '../models/game.dart';
 
 class GameCard extends StatelessWidget {
   final Game game;

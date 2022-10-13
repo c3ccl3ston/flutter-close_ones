@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../data_types/season.dart';
-import '../data_types/week.dart';
+import '../models/season.dart';
+import '../models/week.dart';
 
 class DrawerOptions extends StatefulWidget {
   final List<Season> seasons;

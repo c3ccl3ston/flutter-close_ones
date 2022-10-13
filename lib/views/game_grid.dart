@@ -2,8 +2,8 @@ import 'package:closeones_app/views/game_card.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 
-import '../data_types/game.dart';
-import '../data_types/week.dart';
+import '../models/game.dart';
+import '../models/week.dart';
 
 class GameGrid extends StatelessWidget {
   const GameGrid({super.key, required this.games, required this.week});
