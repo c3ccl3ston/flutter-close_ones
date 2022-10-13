@@ -76,12 +76,19 @@ class GameCard extends StatelessWidget {
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 5.0),
-                                          child: Text(
-                                              game.awayTeam.toUpperCase(),
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 18)),
+                                          child: SizedBox(
+                                            width: 125,
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                  game.awayTeam.toUpperCase(),
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      fontSize: 18)),
+                                            ),
+                                          ),
                                         )
                                       ],
                                     )),
@@ -117,12 +124,19 @@ class GameCard extends StatelessWidget {
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 5.0),
-                                          child: Text(
-                                              game.homeTeam.toUpperCase(),
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 18)),
+                                          child: SizedBox(
+                                            width: 125,
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                  game.homeTeam.toUpperCase(),
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      fontSize: 18)),
+                                            ),
+                                          ),
                                         )
                                       ],
                                     )),

@@ -27,6 +27,8 @@ class HomepageState extends State<Homepage> with RestorationMixin {
   final RestorableInt selectedWeek = RestorableInt(0);
   final RestorableBool shouldCacheWeek = RestorableBool(false);
 
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -110,51 +112,54 @@ class HomepageState extends State<Homepage> with RestorationMixin {
       drawerWidth = screenWidth * .4;
     }
 
+    bool drawerIsOpened = false;
+
     return Scaffold(
-      drawerEnableOpenDragGesture: true,
-      drawerEdgeDragWidth: MediaQuery.of(context).size.width,
-      appBar: AppBar(title: const Text("Close Ones"), centerTitle: true),
-      drawer: ClipRRect(
-        borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-        child: Drawer(
-          semanticLabel: "Drawer",
-          width: drawerWidth,
-          child: SafeArea(
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: (() {
-                          Navigator.of(context).pop();
-                        }),
-                        icon: const Icon(Icons.close)),
-                  ],
-                ),
-                SingleChildScrollView(
-                    child: DrawerOptions(
-                  seasons: _seasons,
-                  onSelectItem: _onSelectItem,
-                  selectedSeason: selectedSeason.value,
-                  selectedSeasonType: selectedSeasonType.value,
-                  selectedWeek: selectedWeek.value,
-                ))
-              ],
+        key: _globalKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: MediaQuery.of(context).size.width / 4,
+        onDrawerChanged: (isOpened) => drawerIsOpened = isOpened,
+        appBar: AppBar(title: const Text("Close Ones"), centerTitle: true),
+        drawer: ClipRRect(
+          borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
+          child: Drawer(
+            semanticLabel: "Drawer",
+            width: drawerWidth,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                          onPressed: (() {
+                            Navigator.of(context).pop();
+                          }),
+                          icon: const Icon(Icons.close)),
+                    ],
+                  ),
+                  SingleChildScrollView(
+                      child: DrawerOptions(
+                    seasons: _seasons,
+                    onSelectItem: _onSelectItem,
+                    selectedSeason: selectedSeason.value,
+                    selectedSeasonType: selectedSeasonType.value,
+                    selectedWeek: selectedWeek.value,
+                  ))
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      body: _getCloseGamesList(
-          Week(
-              season: selectedSeason.value,
-              seasonType: selectedSeasonType.value,
-              week: selectedWeek.value,
-              shouldCache: shouldCacheWeek.value),
-          context),
-    );
+        body: _getCloseGamesList(
+            Week(
+                season: selectedSeason.value,
+                seasonType: selectedSeasonType.value,
+                week: selectedWeek.value,
+                shouldCache: shouldCacheWeek.value),
+            context));
   }
 
   @override
