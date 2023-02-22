@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:closeones_app/models/season.dart';
 import 'package:closeones_app/views/drawer_options.dart';
 import 'package:flutter/material.dart';
@@ -64,25 +66,29 @@ class HomepageState extends State<Homepage> with RestorationMixin {
     Week lastestWeek =
         Week(season: "", seasonType: "", week: 0, shouldCache: false);
     int index = 0;
-    for (int i = DateTime.now().year; i >= (DateTime.now().year - 4); i--) {
+    for (int i = DateTime.now().year; i >= (DateTime.now().year - 10); i--) {
       List<Season> season = await Utils().fetchSeasons(i);
-      List<Week> weeks = <Week>[];
 
-      for (int j = 0; j < season.length; j++) {
-        Week w = Week(
-            season: season[j].season,
-            week: season[j].week,
-            seasonType: season[j].seasonType);
-        if (i == DateTime.now().year && j == season.length - 1) {
-          lastestWeek = w;
+      if (season.isNotEmpty) {
+        List<Week> weeks = <Week>[];
+
+        for (int j = 0; j < season.length; j++) {
+          Week w = Week(
+              season: season[j].season,
+              week: season[j].week,
+              seasonType: season[j].seasonType);
+          if (index == 0 && j == season.length - 1) {
+            lastestWeek = w;
+          }
+
+          w.shouldCache =
+              (season[j].lastGameStart.add(const Duration(hours: 6)))
+                  .isBefore(DateTime.now());
+          weeks.add(w);
         }
-
-        w.shouldCache = (season[j].lastGameStart.add(const Duration(hours: 6)))
-            .isBefore(DateTime.now());
-        weeks.add(w);
+        newSeasons.add(season[index]);
+        newSeasons[index++].weeks = weeks;
       }
-      newSeasons.add(season[index]);
-      newSeasons[index++].weeks = weeks;
     }
 
     setState(() {
@@ -121,28 +127,30 @@ class HomepageState extends State<Homepage> with RestorationMixin {
             semanticLabel: "Drawer",
             width: drawerWidth,
             child: SafeArea(
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          onPressed: (() {
-                            Navigator.of(context).pop();
-                          }),
-                          icon: const Icon(Icons.close)),
-                    ],
-                  ),
-                  SingleChildScrollView(
-                      child: DrawerOptions(
-                    seasons: _seasons,
-                    onSelectItem: _onSelectItem,
-                    selectedSeason: selectedSeason.value,
-                    selectedSeasonType: selectedSeasonType.value,
-                    selectedWeek: selectedWeek.value,
-                  ))
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: (() {
+                              Navigator.of(context).pop();
+                            }),
+                            icon: const Icon(Icons.close)),
+                      ],
+                    ),
+                    SingleChildScrollView(
+                        child: DrawerOptions(
+                      seasons: _seasons,
+                      onSelectItem: _onSelectItem,
+                      selectedSeason: selectedSeason.value,
+                      selectedSeasonType: selectedSeasonType.value,
+                      selectedWeek: selectedWeek.value,
+                    ))
+                  ],
+                ),
               ),
             ),
           ),
